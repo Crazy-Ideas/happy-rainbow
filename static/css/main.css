@@ -3,13 +3,13 @@
 }
 
 /*--------------------
-1. About Us
+1. Section Title
 --------------------*/
 
 .section-title h2 {
     font-size: 32px;
-    color: #eb0102;
     font-weight: bold;
+    color: #eb0102;
     letter-spacing: -0.6px;
     position: relative;
     margin: 15px 0;
@@ -29,12 +29,47 @@
     background: #D4D4D4;
 }
 
-.dark-bg .section-title h2 {
+/*--------------------
+2. HR Rainbow colors
+--------------------*/
+
+.hr-bg-violet {
+    background-color: #8500b3;
     color: #fff;
 }
 
+.hr-bg-indigo {
+    background-color: #0304d8;
+    color: #fff;
+}
 
-.section-title p {
+.hr-bg-blue {
+    background-color: #06e8fe;
+}
+
+.hr-bg-green {
+    background-color: #02e502;
+}
+
+.hr-bg-yellow {
+    background-color: #e3d918;
+}
+
+.hr-bg-orange {
+    background-color: #ff6501;
+    color: #fff;
+}
+
+.hr-bg-red {
+    background-color: #eb0102;
+    color: #fff;
+}
+
+/*--------------------
+3. HR Custom styling
+--------------------*/
+
+.hr-p {
     font-size: 18px;
     font-weight: 300;
     line-height: 31px;
@@ -42,11 +77,11 @@
     text-align: justify;
 }
 
-/*--------------------
-1. Contact Us
---------------------*/
+.hr-borders {
+    border-bottom: 1px solid #fff;
+    border-top: 1px solid #fff;
+}
 
-.dark-bg {
-    background-color: #ff6501;
-    color: #fff;
+.hr-indent {
+    margin: 20px 0;
 }
