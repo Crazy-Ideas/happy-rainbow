@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-md">
+            <img src="{{ url_for('static', filename='happy_rainbow.jpg') }}" alt="HR" class="img-fluid"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md">
+            <div class="section-title">
+                <h2 class="text-center">Happy Rainbow</h2>
+                <p class="text-center">Welcome to Happy Rainbow Art Classes</p>
+            </div>
+        </div>
+    </div>
+    <br>
+{% endblock %}
