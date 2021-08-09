@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{%- block app_content %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="section-title">
+                <h2>Happy Rainbow - Credentials</h2>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-8">
+            <form class="form" method="POST" id="login-form" enctype="multipart/form-data" novalidate>
+                {{ render_field(form.csrf_token) }}
+                {{ render_field(form.email, "Please contact info@crazyideas.co.in for login credentials.") }}
+                {{ render_field(form.password, "You can save your password in the browser.") }}
+                {{ render_field(form.submit) }}
+            </form>
+        </div>
+    </div>
+{%- endblock %}
