@@ -4,7 +4,11 @@
     <div class="row">
         <div class="col-md">
             <div class="section-title">
-                <h2>Add a new Workshop</h2>
+                {% if create %}
+                    <h2>Add a new Workshop</h2>
+                {% else %}
+                    <h2>Edit the Workshop</h2>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -19,7 +23,11 @@
                 {{ render_field(form.time) }}
                 {{ render_field(form.venue) }}
                 {{ render_field(form.instructor) }}
-                {{ form.submit(class_="btn btn-success") }}
+                {% if create %}
+                    {{ form.submit(class_="btn btn-success", value="Create") }}
+                {% else %}
+                    {{ form.submit(class_="btn btn-warning", value="Save") }}
+                {% endif %}
             </form>
         </div>
     </div>

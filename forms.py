@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 
 import pytz
+from flask import request
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, SubmitField, StringField
 from wtforms.validators import InputRequired, ValidationError
@@ -10,7 +11,7 @@ from models import User, Workshop
 
 
 class WorkshopForm(FlaskForm):
-    INVALID_DATE_TEXT: str = "Invalid Date"
+    INVALID_DATE_TEXT: str = "Invalid Date."
     title: StringField = StringField("Title", validators=[InputRequired()], description="E.g. Fevicryl Workshop")
     topic: StringField = StringField("Topic", validators=[InputRequired()],
                                      description="The topic to be covered in the workshop.")
@@ -22,9 +23,16 @@ class WorkshopForm(FlaskForm):
     venue: StringField = StringField("Venue", validators=[InputRequired()], default="Zoom")
     submit: SubmitField = SubmitField("Add Workshop")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, workshop: Workshop = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.workshop: Workshop = Workshop()
+        self.workshop: Workshop = workshop if workshop else Workshop()
+        if request.method == "GET" and workshop:
+            self.title.data = workshop.title
+            self.topic.data = workshop.topic
+            self.date.data = workshop.date.strftime("%d/%m/%y")
+            self.time.data = workshop.time
+            self.instructor.data = workshop.instructor
+            self.venue.data = workshop.venue
 
     def validate_title(self, title: StringField):
         self.workshop.title = title.data

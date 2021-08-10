@@ -1,7 +1,7 @@
 from functools import wraps
 from typing import List
 
-from flask import render_template, request, url_for, Response, make_response, redirect, current_app
+from flask import render_template, request, url_for, Response, make_response, redirect, current_app, flash
 from flask_login import login_user, current_user, logout_user
 from werkzeug.urls import url_parse
 
@@ -45,8 +45,22 @@ def upcoming_workshops():
 def create_workshop():
     form = WorkshopForm()
     if not form.validate_on_submit():
-        return render_template("workshop_create.html", form=form, title="Add Workshop")
+        return render_template("workshop_form.html", form=form, title="Add Workshop", create=True)
     form.workshop.create()
+    return redirect(url_for("upcoming_workshops"))
+
+
+@app.route("/workshops/update/<workshop_id>", methods=["GET", "POST"])
+@cookie_login_required
+def update_workshop(workshop_id: str):
+    workshop: Workshop = Workshop.get_by_id(workshop_id)
+    if not workshop:
+        flash("Error in retrieving workshop details.")
+        return redirect(url_for("home"))
+    form = WorkshopForm(workshop)
+    if not form.validate_on_submit():
+        return render_template("workshop_form.html", form=form, title="Edit Workshop", create=False)
+    form.workshop.save()
     return redirect(url_for("upcoming_workshops"))
 
 
