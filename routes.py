@@ -7,7 +7,7 @@ from werkzeug.urls import url_parse
 
 from app import app, get_user_from_token
 from config import Config, today
-from forms import LoginForm, WorkshopForm
+from forms import LoginForm, WorkshopForm, WorkshopDeleteForm
 from models import Workshop
 
 
@@ -32,12 +32,16 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/workshops/future")
+@app.route("/workshops/future", methods=["GET", "POST"])
 @cookie_login_required
 def upcoming_workshops():
     workshops: List[Workshop] = Workshop.objects.filter("date", ">=", today()).get()
     workshops.sort(key=lambda workshop: workshop.date)
-    return render_template("workshop_list.html", title="Upcoming Workshops", workshops=workshops)
+    form = WorkshopDeleteForm()
+    if not form.validate_on_submit():
+        return render_template("workshop_list.html", title="Upcoming Workshops", workshops=workshops, form=form)
+    form.workshop.delete()
+    return redirect(url_for("upcoming_workshops"))
 
 
 @app.route("/workshops/create", methods=["GET", "POST"])

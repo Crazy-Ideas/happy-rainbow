@@ -4,7 +4,7 @@ from typing import Optional, List
 import pytz
 from flask import request
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, SubmitField, StringField
+from wtforms import PasswordField, SubmitField, StringField, HiddenField
 from wtforms.validators import InputRequired, ValidationError
 
 from models import User, Workshop
@@ -16,7 +16,7 @@ class WorkshopForm(FlaskForm):
     topic: StringField = StringField("Topic", validators=[InputRequired()],
                                      description="The topic to be covered in the workshop.")
     date: StringField = StringField("Date", validators=[InputRequired()],
-                                    description="Enter date in dd/mm/yy for0:mat. For e.g. 21/8/21")
+                                    description="Enter date in dd/mm/yy format. For e.g. 26/9/21")
     time: StringField = StringField("Time", validators=[InputRequired()],
                                     description="Enter start time and end time of workshop. For e.g. 2:00 to 3:30 pm")
     instructor: StringField = StringField("Instructor", validators=[InputRequired()], default="Darshini")
@@ -59,6 +59,23 @@ class WorkshopForm(FlaskForm):
 
     def validate_venue(self, venue: StringField):
         self.workshop.venue = venue.data
+
+
+class WorkshopDeleteForm(FlaskForm):
+    ERROR_TEXT: str = "Invalid workshop id."
+    workshop_id: HiddenField = HiddenField()
+    submit: SubmitField = SubmitField("Yes - Delete")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.workshop: Optional[Workshop] = None
+
+    def validate_workshop_id(self, workshop_id: HiddenField):
+        if not workshop_id.data:
+            raise ValidationError(self.ERROR_TEXT)
+        self.workshop: Workshop = Workshop.get_by_id(workshop_id.data)
+        if not self.workshop:
+            raise ValidationError(self.ERROR_TEXT)
 
 
 class LoginForm(FlaskForm):
