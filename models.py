@@ -16,10 +16,10 @@ class Workshop(FirestoreDocument):
     def __init__(self):
         super().__init__()
         self.title: str = str()
-        self.instructor: str = str()
         self.topic: str = str()
         self.date: datetime = today()
         self.time: str = str()
+        self.instructor: str = str()
         self.venue: str = str()
         self.image_url: str = str()
         self.materials: List[str] = list()

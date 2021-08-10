@@ -43,6 +43,10 @@ from routes import *
 
 @app.shell_context_processor
 def make_shell_context() -> dict:
+    from models import Workshop
     return {
         "User": User,
+        "Workshop": Workshop,
+        "Config": Config,
+        "today": today
     }

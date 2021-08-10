@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{%- block app_content %}
+    <div class="row">
+        <div class="col-md">
+            <div class="section-title">
+                <h2>Add a new Workshop</h2>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-8">
+            <form class="form" method="POST" id="create-workshop" enctype="multipart/form-data" novalidate>
+                {{ render_field(form.csrf_token) }}
+                {{ render_field(form.title) }}
+                {{ render_field(form.topic) }}
+                {{ render_field(form.date) }}
+                {{ render_field(form.time) }}
+                {{ render_field(form.venue) }}
+                {{ render_field(form.instructor) }}
+                {{ form.submit(class_="btn btn-success") }}
+            </form>
+        </div>
+    </div>
+{%- endblock %}

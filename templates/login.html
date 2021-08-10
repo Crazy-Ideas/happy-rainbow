@@ -13,9 +13,9 @@
         <div class="col-md-8">
             <form class="form" method="POST" id="login-form" enctype="multipart/form-data" novalidate>
                 {{ render_field(form.csrf_token) }}
-                {{ render_field(form.email, "Please contact info@crazyideas.co.in for login credentials.") }}
-                {{ render_field(form.password, "You can save your password in the browser.") }}
-                {{ render_field(form.submit) }}
+                {{ render_field(form.email) }}
+                {{ render_field(form.password) }}
+                {{ form.submit(class_="btn btn-primary") }}
             </form>
         </div>
     </div>

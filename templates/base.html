@@ -25,7 +25,7 @@
 <body>
 <!-- NavBar -->
 <div class="container">
-    <nav class="navbar navbar-dark navbar-expand-md fixed-top hr-bg-indigo">
+    <nav class="navbar navbar-dark navbar-expand-md fixed-top hr-bg-violet">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('home') }}">
                 <img src="{{ url_for('static', filename='brand.png') }}" alt="HR" width="42" height="30" class="">
@@ -39,7 +39,7 @@
                     {%- if current_user.is_authenticated %}
                         <a class="nav-item nav-link {% if request.url_rule.endpoint == 'upcoming_workshops' %}active{% endif %}"
                            href="{{ url_for('upcoming_workshops') }}" title="Home">
-                            <i class="bi-calendar-week"></i> Upcoming Workshops
+                            <i class="bi-calendar-week"></i> Upcoming
                         </a>
                     {%- endif %}
                 </div>
@@ -61,11 +61,9 @@
 
 <!--Macros-->
 <!-- Macro to render all types of form fields -->
-{%- macro render_field(field, field_text="") %}
+{%- macro render_field(field) %}
     {%- if field.type in ("HiddenField", "CSRFTokenField") %}
         {{ field() }}
-    {%- elif field.type == "SubmitField" %}
-        {{ field(class_="btn hr-bg-violet") }}
     {%- else %}
         <div class="mb-3">
             <label for="{{ field.id }}" class="form-label">{{ field.label }}</label>
@@ -74,8 +72,8 @@
             {% else %}
                 {{ field(class_="form-control") }}
             {% endif %}
-            {% if field_text %}
-                <div class="form-text">{{ field_text }}</div>
+            {% if field.description %}
+                <div class="form-text">{{ field.description }}</div>
             {% endif %}
             {% for error in field.errors %}
                 <div class="invalid-feedback">{{ error }}</div>
