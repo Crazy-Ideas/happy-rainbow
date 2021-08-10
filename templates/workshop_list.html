@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{%- block app_content %}
+    <div class="row">
+        <div class="col-md-8 section-title">
+            <h2>Upcoming Workshops</h2>
+        </div>
+        <div class="col-md-4 text-center">
+            <a href="#" class="btn hr-bg-green">
+                <i class="bi-plus-circle"></i> Add Workshop
+            </a>
+        </div>
+    </div>
+    {% if workshops %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Topic</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Open</th>
+                <th scope="col">Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for workshop in workshops %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ workshop.title }}</td>
+                    <td>{{ workshop.topic }}</td>
+                    <td>{{ workshop.date_format }}</td>
+                    <td>{{ workshop.time }}</td>
+                    <td>
+                        <a href="#" class="btn hr-bg-violet">
+                            <i class="bi-folder2-open"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" class="btn hr-bg-red">
+                            <i class="bi-trash-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <br>
+        <p class="text-center">There are no upcoming workshops</p>
+    {% endif %}
+{% endblock %}

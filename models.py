@@ -1,13 +1,36 @@
 import os
 from base64 import b64encode
 from datetime import datetime, timedelta
+from typing import List
 
 import pytz
 from firestore_ci import FirestoreDocument
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from config import Config
+from config import Config, today
+
+
+class Workshop(FirestoreDocument):
+
+    def __init__(self):
+        super().__init__()
+        self.title: str = str()
+        self.instructor: str = str()
+        self.topic: str = str()
+        self.date: datetime = today()
+        self.time: str = str()
+        self.venue: str = str()
+        self.image_url: str = str()
+        self.materials: List[str] = list()
+        self.bg_color: int = 0xFFFFFF  # white
+
+    @property
+    def date_format(self) -> str:
+        return self.date.astimezone(pytz.timezone("Asia/Kolkata")).strftime("%a, %d-%b-%y")
+
+
+Workshop.init()
 
 
 class User(FirestoreDocument, UserMixin):
@@ -17,7 +40,7 @@ class User(FirestoreDocument, UserMixin):
         self.email: str = str()
         self.password_hash: str = str()
         self.token: str = str()
-        self.token_expiration: datetime = datetime.utcnow().replace(tzinfo=pytz.UTC)
+        self.token_expiration: datetime = datetime.now(tz=pytz.UTC)
 
     def __repr__(self):
         return self.email

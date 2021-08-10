@@ -1,6 +1,8 @@
 import os
+from datetime import datetime
 from typing import Optional
 
+import pytz
 from flask import Flask
 from flask_login import LoginManager
 
@@ -20,6 +22,15 @@ login.session_protection = "strong" if Config.CI_SECURITY else "basic"
 @login.user_loader
 def load_user(email: str) -> Optional[User]:
     user: User = User.objects.filter_by(email=email).first()
+    return user
+
+
+def get_user_from_token(token: str) -> Optional[User]:
+    user: User = User.objects.filter_by(token=token).first()
+    if not user:
+        return None
+    if user.token_expiration < datetime.now(tz=pytz.UTC):
+        return None
     return user
 
 

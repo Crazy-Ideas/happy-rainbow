@@ -1,5 +1,8 @@
 import os
 from base64 import b64encode
+from datetime import datetime
+
+import pytz
 
 
 class Config:
@@ -7,3 +10,8 @@ class Config:
     CI_SECURITY = True if os.environ.get("ENVIRONMENT") == "prod" else False
     SESSION_COOKIE_SECURE = CI_SECURITY
     TOKEN_EXPIRY = 3600  # 1 hour = 3600 seconds
+
+
+def today() -> datetime:
+    now = datetime.now(tz=pytz.UTC)
+    return datetime(year=now.year, month=now.month, day=now.day, tzinfo=pytz.UTC)

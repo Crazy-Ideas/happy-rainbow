@@ -37,9 +37,9 @@
             <div class="collapse navbar-collapse" id="navbarMenu">
                 <div class="navbar-nav me-auto mb-2 mb-lg-0">
                     {%- if current_user.is_authenticated %}
-                        <a class="nav-item nav-link {% if request.url_rule.endpoint == 'home' %}active{% endif %}"
-                           href="{{ url_for('home') }}" title="Home">
-                            <i class="bi-house-door-fill"></i> Home
+                        <a class="nav-item nav-link {% if request.url_rule.endpoint == 'upcoming_workshops' %}active{% endif %}"
+                           href="{{ url_for('upcoming_workshops') }}" title="Home">
+                            <i class="bi-calendar-week"></i> Upcoming Workshops
                         </a>
                     {%- endif %}
                 </div>
@@ -68,12 +68,12 @@
         {{ field(class_="btn hr-bg-violet") }}
     {%- else %}
         <div class="mb-3">
+            <label for="{{ field.id }}" class="form-label">{{ field.label }}</label>
             {% if field.errors %}
-                <label for="{{ field.id }}" class="form-label is-invalid">{{ field.label }}</label>
+                {{ field(class_="form-control is-invalid") }}
             {% else %}
-                <label for="{{ field.id }}" class="form-label">{{ field.label }}</label>
+                {{ field(class_="form-control") }}
             {% endif %}
-            {{ field(class_="form-control") }}
             {% if field_text %}
                 <div class="form-text">{{ field_text }}</div>
             {% endif %}
