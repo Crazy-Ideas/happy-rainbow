@@ -44,6 +44,14 @@ def upcoming_workshops():
     return redirect(url_for("upcoming_workshops"))
 
 
+@app.route("/workshops/past")
+@cookie_login_required
+def completed_workshops():
+    workshops: List[Workshop] = Workshop.objects.filter("date", "<=", today()).get()
+    workshops.sort(key=lambda workshop: workshop.date, reverse=True)
+    return render_template("workshop_list.html", title="Completed Workshops", workshops=workshops, completed=True)
+
+
 @app.route("/workshops/create", methods=["GET", "POST"])
 @cookie_login_required
 def create_workshop():
