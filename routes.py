@@ -52,6 +52,25 @@ def completed_workshops():
     return render_template("completed_workshop.html", title="Completed Workshops", workshops=workshops)
 
 
+@app.route("/workshops/<workshop_id>/certificate_url")
+@cookie_login_required
+def certificate_url(workshop_id: str):
+    workshop: Workshop = Workshop.get_by_id(workshop_id)
+    if not workshop:
+        flash("Invalid workshop id.")
+        return redirect(url_for("completed_workshops"))
+    workshop.generate_url()
+    return render_template("certificate_url.html", title="Certificate Link", workshop=workshop)
+
+
+@app.route("/workshops/<workshop_id>/certificate/<signature>")
+def certificate_download(workshop_id: str, signature: str):
+    workshop: Workshop = Workshop.get_by_id(workshop_id)
+    if not workshop or workshop.signature != signature:
+        return render_template("certificate_download.html", workshop=None)
+    return render_template("certificate_download.html", workshop=workshop)
+
+
 @app.route("/workshops/create", methods=["GET", "POST"])
 @cookie_login_required
 def create_workshop():

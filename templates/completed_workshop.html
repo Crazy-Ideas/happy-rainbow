@@ -33,7 +33,7 @@
                     <td>{{ workshop.date_format }}</td>
                     <td>{{ workshop.time }}</td>
                     <td>
-                        <a href="{{ url_for('update_workshop', workshop_id=workshop.id) }}" class="btn btn-success">
+                        <a href="{{ url_for('certificate_url', workshop_id=workshop.id) }}" class="btn btn-success">
                             <i class="bi-plus-circle"></i>
                         </a>
                     </td>

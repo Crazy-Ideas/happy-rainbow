@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{%- block app_content %}
+    <div class="row">
+        <div class="col-md">
+            <div class="section-title">
+                <h2>Certificate Link</h2>
+            </div>
+        </div>
+    </div>
+    <br>
+    <p>Certificate Link for {{ workshop.title }} ({{ workshop.topic }}) held on {{ workshop.date_format }}</p>
+    <div class="row bg-light">
+        <div class="col-md-10">
+            <p id="urlText" class="text-break text-secondary font-monospace fw-light small">
+                {{ workshop.url }}
+            </p>
+        </div>
+        <div class="col-md-2 d-grid md-flex align-content-md-end">
+            <button id="copyButton" class="btn btn-outline-secondary">
+                <i id="copyIcon" class="bi-clipboard-plus"></i> <span id="copyText">Copy</span>
+            </button>
+        </div>
+    </div>
+{%- endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        document.getElementById("copyButton").addEventListener("click", async () => {
+            let url = document.getElementById("urlText").innerText;
+            try {
+                await navigator.clipboard.writeText(url);
+                document.getElementById("copyText").innerText = "Copied";
+                document.getElementById("copyIcon").classList.remove("bi-clipboard-plus");
+                document.getElementById("copyIcon").classList.add("bi-clipboard-check");
+            } catch (e) {
+                console.log(e);
+            }
+        });
+    </script>
+{% endblock %}
