@@ -14,7 +14,8 @@
         {% if form.participant.certificate_pdf %}
             <br>
             <p>Your certificate is ready!</p>
-            <a href="#" class="btn btn-primary">
+            <a href="{{ url_for("download", workshop_id=workshop.id, participant_id=participant.id, signature=signature) }}"
+               class="btn btn-primary">
                 <i class="bi-file-medical"></i> Download Certificate
             </a>
         {% else %}

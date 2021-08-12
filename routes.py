@@ -1,11 +1,12 @@
 from functools import wraps
 from typing import List
 
-from flask import render_template, request, url_for, Response, make_response, redirect, current_app, flash
+from flask import render_template, request, url_for, Response, make_response, redirect, current_app, flash, send_file
 from flask_login import login_user, current_user, logout_user
 from werkzeug.urls import url_parse
 
 from app import app, get_user_from_token
+from certificate import create_certificate, certificate_download
 from config import Config, today
 from forms import LoginForm, WorkshopForm, WorkshopDeleteForm, ParticipantForm, ParticipantDeleteForm
 from models import Workshop, Participant
@@ -75,13 +76,15 @@ def certificate_preparation(workshop_id: str, signature: str):
                                                              name_key=form.participant.name_key).first()
     if participant:
         form.participant.certificate_pdf = participant.certificate_pdf
-        return render_template("participant_form.html", workshop=workshop, form=form)
-    form.participant.certificate_pdf = "certificate"
+        return render_template("participant_form.html", workshop=workshop, form=form, participant=participant,
+                               signature=signature)
+    form.participant.certificate_pdf = create_certificate(workshop, form.participant)
     form.participant.workshop_id = workshop_id
     form.participant.create()
     workshop.participants += 1
     workshop.save()
-    return render_template("participant_form.html", workshop=workshop, form=form)
+    return render_template("participant_form.html", workshop=workshop, form=form, participant=form.participant,
+                           signature=signature)
 
 
 @app.route("/workshops/<workshop_id>/participants", methods=["GET", "POST"])
@@ -125,6 +128,17 @@ def update_workshop(workshop_id: str):
         return render_template("workshop_form.html", form=form, title="Edit Workshop", create=False)
     form.workshop.save()
     return redirect(url_for("upcoming_workshops"))
+
+
+@app.route("/workshops/<workshop_id>/participants/<participant_id>/download/<signature>")
+def download(workshop_id: str, participant_id: str, signature: str):
+    workshop: Workshop = Workshop.get_by_id(workshop_id)
+    participant: Participant = Participant.get_by_id(participant_id)
+    if not workshop or not workshop.valid_signature(signature) or not participant:
+        return render_template("participant_form.html", workshop=None)
+    file_path = certificate_download(participant.certificate_pdf)
+    filename = f"Happy Rainbow Certificate - {participant.name}.pdf"
+    return send_file(file_path, as_attachment=True, attachment_filename=filename)
 
 
 @app.route("/login", methods=["GET", "POST"])
