@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{%- block app_content %}
+    <div class="row">
+        <div class="col-md">
+            <div class="section-title">
+                <h2>Download Certificate</h2>
+            </div>
+        </div>
+    </div>
+    <br>
+    {% if workshop %}
+        <p>Congratulations for completing the {{ workshop.title }} on {{ workshop.date_format }}</p>
+        {% if form.participant.certificate_pdf %}
+            <br>
+            <p>Your certificate is ready!</p>
+            <a href="#" class="btn btn-primary">
+                <i class="bi-file-medical"></i> Download Certificate
+            </a>
+        {% else %}
+            <p>Please fill in the following details so that your certificate can be generated.</p>
+            <div class="row">
+                <div class="col-md-8">
+                    <form class="form" method="POST" id="participant" enctype="multipart/form-data" novalidate>
+                        {{ render_field(form.csrf_token) }}
+                        {{ render_field(form.name) }}
+                        {{ render_field(form.phone) }}
+                    </form>
+                    <button id="certificateButton" class="btn btn-primary">
+                        <span id="certificateSpinner" role="status"></span>
+                        <i class="bi-file-medical"></i>
+                        <span id="certificateText">Generate Certificate</span>
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="row">
+            <div class="col text-center">
+                This link is invalid. Please contact Happy Rainbow for a new link.
+            </div>
+        </div>
+    {% endif %}
+{%- endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {% if not  form.participant.certificate_pdf %}
+        <script>
+            document.getElementById("certificateButton").addEventListener("click", (e) => {
+                e.target.disabled = true;
+                document.getElementById("certificateSpinner").classList.add("spinner-border", "spinner-border-sm");
+                document.getElementById("certificateText").innerText = "Generating..."
+                document.forms["participant"].submit();
+            });
+        </script>
+    {% endif %}
+{% endblock %}

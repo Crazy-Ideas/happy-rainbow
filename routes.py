@@ -7,8 +7,8 @@ from werkzeug.urls import url_parse
 
 from app import app, get_user_from_token
 from config import Config, today
-from forms import LoginForm, WorkshopForm, WorkshopDeleteForm
-from models import Workshop
+from forms import LoginForm, WorkshopForm, WorkshopDeleteForm, ParticipantForm
+from models import Workshop, Participant
 
 
 def cookie_login_required(route_function):
@@ -63,12 +63,35 @@ def certificate_url(workshop_id: str):
     return render_template("certificate_url.html", title="Certificate Link", workshop=workshop)
 
 
-@app.route("/workshops/<workshop_id>/certificate/<signature>")
-def certificate_download(workshop_id: str, signature: str):
+@app.route("/workshops/<workshop_id>/certificate/<signature>", methods=["GET", "POST"])
+def certificate_preparation(workshop_id: str, signature: str):
     workshop: Workshop = Workshop.get_by_id(workshop_id)
-    if not workshop or workshop.signature != signature:
-        return render_template("certificate_download.html", workshop=None)
-    return render_template("certificate_download.html", workshop=workshop)
+    if not workshop or not workshop.valid_signature(signature):
+        return render_template("participant_form.html", workshop=None)
+    form = ParticipantForm()
+    if not form.validate_on_submit():
+        return render_template("participant_form.html", workshop=workshop, form=form)
+    participant: Participant = Participant.objects.filter_by(workshop_id=workshop_id,
+                                                             name_key=form.participant.name_key).first()
+    if participant:
+        form.participant.certificate_pdf = participant.certificate_pdf
+        return render_template("participant_form.html", workshop=workshop, form=form)
+    form.participant.certificate_pdf = "certificate"
+    form.participant.workshop_id = workshop_id
+    form.participant.create()
+    workshop.participants += 1
+    workshop.save()
+    return render_template("participant_form.html", workshop=workshop, form=form)
+
+
+@app.route("/workshops/<workshop_id>/participants")
+@cookie_login_required
+def participants(workshop_id: str):
+    workshop: Workshop = Workshop.get_by_id(workshop_id)
+    if not workshop or workshop.participants == 0:
+        flash("Nobody has yet downloaded the certificate.")
+        return redirect(url_for("completed_workshops"))
+    return render_template("participants.html", workshop=workshop, title="Workshop Attendees")
 
 
 @app.route("/workshops/create", methods=["GET", "POST"])

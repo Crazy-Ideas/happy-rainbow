@@ -45,7 +45,7 @@ class Workshop(FirestoreDocument):
 
     @property
     def url(self) -> str:
-        return f"{request.host_url}{url_for('certificate_download', workshop_id=self.id, signature=self.signature)}"
+        return f"{request.host_url}{url_for('certificate_preparation', workshop_id=self.id, signature=self.signature)}"
 
     def generate_url(self) -> None:
         if self.valid_url:
@@ -54,8 +54,25 @@ class Workshop(FirestoreDocument):
         self.url_expiration: datetime = datetime.now(tz=pytz.UTC) + timedelta(days=7)
         self.save()
 
+    def valid_signature(self, signature: str) -> bool:
+        return (self.valid_url and self.signature == signature)
+
 
 Workshop.init()
+
+
+class Participant(FirestoreDocument):
+
+    def __init__(self):
+        super().__init__()
+        self.name: str = str()
+        self.workshop_id: str = str()
+        self.name_key: str = str()
+        self.phone: str = str()
+        self.certificate_pdf: str = str()
+
+
+Participant.init()
 
 
 class User(FirestoreDocument, UserMixin):

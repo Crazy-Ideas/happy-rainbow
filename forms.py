@@ -5,9 +5,9 @@ import pytz
 from flask import request
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, SubmitField, StringField, HiddenField
-from wtforms.validators import InputRequired, ValidationError
+from wtforms.validators import InputRequired, ValidationError, Regexp
 
-from models import User, Workshop
+from models import User, Workshop, Participant
 
 
 class WorkshopForm(FlaskForm):
@@ -76,6 +76,31 @@ class WorkshopDeleteForm(FlaskForm):
         self.workshop: Workshop = Workshop.get_by_id(workshop_id.data)
         if not self.workshop:
             raise ValidationError(self.ERROR_TEXT)
+
+
+PHONE_VALIDATOR = Regexp(regex=r"^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$",
+                         message="Invalid phone number.")
+
+NAME_VALIDATOR = Regexp(regex=r"^[a-zA-Z][a-zA-Z-.'\s]+$", message="Invalid name.")
+
+
+class ParticipantForm(FlaskForm):
+    name: StringField = StringField("Name", validators=[InputRequired(), NAME_VALIDATOR],
+                                    description="Enter name that you want to appear on your certificate.")
+    phone: StringField = StringField("Phone", validators=[InputRequired(), PHONE_VALIDATOR],
+                                     description="Enter your WhatsApp phone number.")
+    submit: SubmitField = SubmitField("Download Certificate")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.participant: Participant = Participant()
+
+    def validate_name(self, name: StringField):
+        self.participant.name = name.data.strip().title()
+        self.participant.name_key = self.participant.name.lower()
+
+    def validate_phone(self, phone: StringField):
+        self.participant.phone = phone.data.strip()
 
 
 class LoginForm(FlaskForm):

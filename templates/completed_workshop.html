@@ -2,13 +2,8 @@
 
 {%- block app_content %}
     <div class="row">
-        <div class="col-md-8 section-title">
+        <div class="col-md section-title">
             <h2>{{ title }}</h2>
-        </div>
-        <div class="col-md-4 text-center">
-            <a href="{{ url_for('create_workshop') }}" class="btn btn-success">
-                <i class="bi-plus-circle"></i> Add Workshop
-            </a>
         </div>
     </div>
     {% if workshops %}
@@ -31,11 +26,22 @@
                     <td>{{ workshop.title }}</td>
                     <td class="d-none d-md-table-cell">{{ workshop.topic }}</td>
                     <td>{{ workshop.date_format }}</td>
-                    <td>{{ workshop.time }}</td>
                     <td>
-                        <a href="{{ url_for('certificate_url', workshop_id=workshop.id) }}" class="btn btn-success">
-                            <i class="bi-plus-circle"></i>
+                        <a href="{{ url_for('participants', workshop_id=workshop.id) }}"
+                           class="btn btn-primary {% if workshop.participants == 0 %} disabled {% endif %}">
+                            <i class="bi-people"></i> {{ workshop.participants }}
                         </a>
+                    </td>
+                    <td>
+                        {% if workshop.valid_url %}
+                            <a href="{{ url_for('certificate_url', workshop_id=workshop.id) }}" class="btn btn-primary">
+                                <i class="bi-link"></i>
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('certificate_url', workshop_id=workshop.id) }}" class="btn btn-success">
+                                <i class="bi-plus-circle"></i>
+                            </a>
+                        {% endif %}
                     </td>
                     <td class="d-none d-md-table-cell">
                         <a href="{{ url_for('update_workshop', workshop_id=workshop.id) }}" class="btn btn-warning">
