@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{%- block app_content %}
+    <div class="row">
+        <div class="col-md-8 section-title">
+            <h2>{{ title }}</h2>
+        </div>
+        <div class="col-md-4 text-center">
+            <a href="{{ url_for('create_workshop') }}" class="btn btn-success">
+                <i class="bi-plus-circle"></i> Add Workshop
+            </a>
+        </div>
+    </div>
+    {% if workshops %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col" class="d-none d-md-table-cell">Topic</th>
+                <th scope="col">Date</th>
+                <th scope="col">Count</th>
+                <th scope="col">Link</th>
+                <th scope="col" class="d-none d-md-table-cell">Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for workshop in workshops %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ workshop.title }}</td>
+                    <td class="d-none d-md-table-cell">{{ workshop.topic }}</td>
+                    <td>{{ workshop.date_format }}</td>
+                    <td>{{ workshop.time }}</td>
+                    <td>
+                        <a href="{{ url_for('update_workshop', workshop_id=workshop.id) }}" class="btn btn-success">
+                            <i class="bi-plus-circle"></i>
+                        </a>
+                    </td>
+                    <td class="d-none d-md-table-cell">
+                        <a href="{{ url_for('update_workshop', workshop_id=workshop.id) }}" class="btn btn-warning">
+                            <i class="bi-pencil"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <br>
+        <p class="text-center">There are no {{ title }}</p>
+    {% endif %}
+{% endblock %}
+

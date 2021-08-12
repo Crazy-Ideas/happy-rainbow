@@ -39,7 +39,7 @@ def upcoming_workshops():
     workshops.sort(key=lambda workshop: workshop.date)
     form = WorkshopDeleteForm()
     if not form.validate_on_submit():
-        return render_template("workshop_list.html", title="Upcoming Workshops", workshops=workshops, form=form)
+        return render_template("upcoming_workshop.html", title="Upcoming Workshops", workshops=workshops, form=form)
     form.workshop.delete()
     return redirect(url_for("upcoming_workshops"))
 
@@ -49,7 +49,7 @@ def upcoming_workshops():
 def completed_workshops():
     workshops: List[Workshop] = Workshop.objects.filter("date", "<=", today()).get()
     workshops.sort(key=lambda workshop: workshop.date, reverse=True)
-    return render_template("workshop_list.html", title="Completed Workshops", workshops=workshops, completed=True)
+    return render_template("completed_workshop.html", title="Completed Workshops", workshops=workshops)
 
 
 @app.route("/workshops/create", methods=["GET", "POST"])
