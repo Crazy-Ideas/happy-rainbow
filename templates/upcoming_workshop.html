@@ -81,8 +81,8 @@
     {{ super() }}
     <!--suppress JSUnresolvedVariable -->
     <script>
-        document.querySelector("#delete-confirmation").addEventListener("show.bs.modal", function (event) {
-            document.forms["workshop"].workshop_id.value = event.relatedTarget.id;
+        document.getElementById("delete-confirmation").addEventListener("show.bs.modal", (e) => {
+            document.forms["workshop"].workshop_id.value = e.relatedTarget.id;
         });
     </script>
 {% endblock %}

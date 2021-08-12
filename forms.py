@@ -103,6 +103,23 @@ class ParticipantForm(FlaskForm):
         self.participant.phone = phone.data.strip()
 
 
+class ParticipantDeleteForm(FlaskForm):
+    ERROR_TEXT: str = "Invalid participant id."
+    participant_id: HiddenField = HiddenField()
+    submit: SubmitField = SubmitField("Yes - Delete")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.participant: Optional[Workshop] = None
+
+    def validate_participant_id(self, participant_id: HiddenField):
+        if not participant_id.data:
+            raise ValidationError(self.ERROR_TEXT)
+        self.participant: Participant = Participant.get_by_id(participant_id.data)
+        if not self.participant:
+            raise ValidationError(self.ERROR_TEXT)
+
+
 class LoginForm(FlaskForm):
     ERROR_TEXT: str = "Invalid email or password."
     email: StringField = StringField("Email", validators=[InputRequired()],

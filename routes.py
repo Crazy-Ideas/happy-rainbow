@@ -7,7 +7,7 @@ from werkzeug.urls import url_parse
 
 from app import app, get_user_from_token
 from config import Config, today
-from forms import LoginForm, WorkshopForm, WorkshopDeleteForm, ParticipantForm
+from forms import LoginForm, WorkshopForm, WorkshopDeleteForm, ParticipantForm, ParticipantDeleteForm
 from models import Workshop, Participant
 
 
@@ -84,14 +84,23 @@ def certificate_preparation(workshop_id: str, signature: str):
     return render_template("participant_form.html", workshop=workshop, form=form)
 
 
-@app.route("/workshops/<workshop_id>/participants")
+@app.route("/workshops/<workshop_id>/participants", methods=["GET", "POST"])
 @cookie_login_required
-def participants(workshop_id: str):
+def view_participants(workshop_id: str):
     workshop: Workshop = Workshop.get_by_id(workshop_id)
     if not workshop or workshop.participants == 0:
         flash("Nobody has yet downloaded the certificate.")
         return redirect(url_for("completed_workshops"))
-    return render_template("participants.html", workshop=workshop, title="Workshop Attendees")
+    participants: List[Participant] = Participant.objects.filter_by(workshop_id=workshop_id).get()
+    form = ParticipantDeleteForm()
+    if not form.validate_on_submit():
+        return render_template("participants.html", workshop=workshop, participants=participants, form=form,
+                               title="Workshop Attendees")
+    form.participant.delete()
+    workshop.participants -= 1
+    workshop.save()
+    # TODO Also remove the certificate from cloud storage
+    return redirect(url_for("view_participants", workshop_id=workshop_id))
 
 
 @app.route("/workshops/create", methods=["GET", "POST"])

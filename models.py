@@ -45,7 +45,11 @@ class Workshop(FirestoreDocument):
 
     @property
     def url(self) -> str:
-        return f"{request.host_url}{url_for('certificate_preparation', workshop_id=self.id, signature=self.signature)}"
+        domain: str = request.host_url
+        reference: str = url_for('certificate_preparation', workshop_id=self.id, signature=self.signature)
+        if domain[-1] == reference[0] == "/":
+            return f"{domain[:-1]}{reference}"
+        return f"{domain}{reference}"
 
     def generate_url(self) -> None:
         if self.valid_url:

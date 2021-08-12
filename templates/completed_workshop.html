@@ -27,7 +27,7 @@
                     <td class="d-none d-md-table-cell">{{ workshop.topic }}</td>
                     <td>{{ workshop.date_format }}</td>
                     <td>
-                        <a href="{{ url_for('participants', workshop_id=workshop.id) }}"
+                        <a href="{{ url_for('view_participants', workshop_id=workshop.id) }}"
                            class="btn btn-primary {% if workshop.participants == 0 %} disabled {% endif %}">
                             <i class="bi-people"></i> {{ workshop.participants }}
                         </a>
