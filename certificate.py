@@ -1,7 +1,8 @@
 import io
 import os
-
 # noinspection PyPackageRequirements
+from typing import List
+
 from googleapiclient.http import MediaIoBaseDownload
 
 from config import Config
@@ -43,8 +44,31 @@ def create_certificate(workshop: Workshop, participant: Participant) -> str:
     return filename
 
 
-def certificate_download(filename):
+def certificate_download(filename: str) -> str:
     file_path = os.path.join(Config.DOWNLOAD_PATH, filename)
     blob = Config.CERTIFICATE_BUCKET.blob(filename)
     blob.download_to_filename(file_path)
     return file_path
+
+
+def certificate_delete(filename: str) -> str:
+    if not filename:
+        return "Certificate filename not specified"
+    blob = Config.CERTIFICATE_BUCKET.blob(filename)
+    if not blob.exists():
+        return "Certificate NOT found"
+    blob.delete()
+    return str()
+
+
+def batch_certificate_delete(workshop_id: str) -> None:
+    participants: List[Participant] = Participant.objects.filter_by(workshop_id=workshop_id).get()
+    filenames: List[str] = [participant.certificate_pdf for participant in participants if participant.certificate_pdf]
+    for participant in participants:
+        participant.certificate_pdf = str()
+    Participant.save_all(participants)
+    blobs = [Config.CERTIFICATE_BUCKET.blob(filename) for filename in filenames]
+    blobs = [blob for blob in blobs if blob.exists()]
+    for blob in blobs:
+        blob.delete()
+    return

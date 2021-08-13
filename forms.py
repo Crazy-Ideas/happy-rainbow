@@ -97,7 +97,7 @@ class ParticipantForm(FlaskForm):
 
     def validate_name(self, name: StringField):
         self.participant.name = name.data.strip().title()
-        self.participant.name_key = self.participant.name.lower()
+        self.participant.name_key = "".join([char for char in name.data.lower() if char.isalpha()])
 
     def validate_phone(self, phone: StringField):
         self.participant.phone = phone.data.strip()
@@ -110,7 +110,7 @@ class ParticipantDeleteForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.participant: Optional[Workshop] = None
+        self.participant: Optional[Participant] = None
 
     def validate_participant_id(self, participant_id: HiddenField):
         if not participant_id.data:

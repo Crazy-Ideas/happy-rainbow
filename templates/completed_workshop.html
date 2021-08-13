@@ -17,6 +17,7 @@
                 <th scope="col">Count</th>
                 <th scope="col">Link</th>
                 <th scope="col" class="d-none d-md-table-cell">Edit</th>
+                <th scope="col" class="d-none d-md-table-cell">Cert</th>
             </tr>
             </thead>
             <tbody>
@@ -48,6 +49,13 @@
                             <i class="bi-pencil"></i>
                         </a>
                     </td>
+                    <td class="d-none d-md-table-cell">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#delete-confirmation" id="{{ workshop.id }}"
+                                {% if workshop.participants == 0 %} disabled {% endif %}>
+                            <i class="bi-file-x"></i>
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -56,5 +64,37 @@
         <br>
         <p class="text-center">There are no {{ title }}</p>
     {% endif %}
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="delete-confirmation" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm All Certificates Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete all certificates for this workshop?</p>
+                </div>
+                <div class="modal-footer">
+                    <form class="form" method="POST" id="workshop" enctype="multipart/form-data" novalidate>
+                        {{ render_field(form.csrf_token) }}
+                        {{ form.workshop_id() }}
+                        {{ form.submit(class_="btn btn-danger") }}
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No - Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <!--suppress JSUnresolvedVariable -->
+    <script>
+        document.getElementById("delete-confirmation").addEventListener("show.bs.modal", (e) => {
+            document.forms["workshop"].workshop_id.value = e.relatedTarget.id;
+        });
+    </script>
 {% endblock %}
 

@@ -11,7 +11,7 @@
     <br>
     {% if workshop %}
         <p>Congratulations for completing the {{ workshop.title }} on {{ workshop.date_format }}</p>
-        {% if form.participant.certificate_pdf %}
+        {% if participant.certificate_pdf %}
             <br>
             <p>Your certificate is ready!</p>
             <a href="{{ url_for("download", workshop_id=workshop.id, participant_id=participant.id, signature=signature) }}"
@@ -46,7 +46,7 @@
 
 {% block scripts %}
     {{ super() }}
-    {% if not  form.participant.certificate_pdf %}
+    {% if not  participant.certificate_pdf %}
         <script>
             document.getElementById("certificateButton").addEventListener("click", (e) => {
                 e.target.disabled = true;

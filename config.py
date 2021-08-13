@@ -20,6 +20,7 @@ class Config:
     DRIVE = build("drive", "v3")
     DOWNLOAD_PATH = os.path.join(os.path.abspath(os.sep), "tmp")
     CERTIFICATE_BUCKET = Client().bucket("hr-certificates")
+    STORAGE_CLIENT = Client()
 
 
 def today() -> datetime:

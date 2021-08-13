@@ -6,6 +6,9 @@
             <h2>{{ title }}</h2>
         </div>
     </div>
+    <br>
+    <p class="text-center">Attendees for <strong>{{ workshop.title }}</strong>
+        on {{ workshop.date_format }}</p>
     <table class="table">
         <thead>
         <tr>
@@ -23,7 +26,8 @@
                 <td>{{ participant.name }}</td>
                 <td>{{ participant.phone }}</td>
                 <td class="d-none d-md-table-cell">
-                    <a href="#" class="btn btn-primary">
+                    <a href="{{ url_for('download', workshop_id=workshop.id, participant_id=participant.id, signature='admin') }}"
+                       class="btn btn-primary {% if not participant.certificate_pdf %}disabled{% endif %}">
                         <i class="bi-file-medical"></i>
                     </a>
                 </td>
